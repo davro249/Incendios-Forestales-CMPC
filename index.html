@@ -111,6 +111,10 @@ textarea:focus{outline:none;border-color:var(--ac)}
 .it.ok{border-color:var(--ok)}.it.mid{border-color:var(--mid)}.it.bad{border-color:var(--bad)}
 .it p{margin:5px 0;font-size:.95rem;overflow-wrap:anywhere}
 .ci{color:var(--ac)}.big .ci{color:#fff}.ci svg{width:34px;height:34px}.ic svg{width:22px;height:22px}.ic{color:var(--ac)}
+.sm{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.65);display:grid;place-items:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px));overflow:auto}
+.sm>div{background:var(--card);border-radius:20px;padding:18px;max-width:440px;width:100%;text-align:center;box-shadow:var(--sh)}
+.sm img{width:100%;max-height:58vh;object-fit:contain;border-radius:14px}
+.sa .btn{margin:10px 4px 0}
 </style></head><body>
 <header class="tb"><button class="ib" onclick="sbt()" aria-label="Panel lateral">☰</button><div class="br"><span>🔥</span><b>Incendios Forestales CMPC</b></div><button class="ib" onclick="tgl()"><span id="ti">🌙</span><span class="tl" id="tt"> Modo noche</span></button></header>
 <div id="bk" onclick="sbt(0)"></div>
@@ -254,7 +258,7 @@ function results(){
  const ic={1:['ok','✅ Correcta'],.5:['mid','🟡 Incompleta'],0:['bad','❌ Incorrecta']};
  wb.innerHTML=`<div class="wh"><div><span class="eb">${T[sec]} · Examen ${lv}</span><h2>Resultados</h2></div></div><div class="res ${ok?'ok':'bad'}"><div class="ring" style="--p:${pc}"><span>${pc}%</span></div><div><h3>${ok?'🎉 ¡Aprobado!':'No aprobado'}</h3><div class="m">${pt(sc)} de ${Q.length} puntos · mínimo 75%</div><div class="cnt"><span class="chip">✅ ${n(1)}</span><span class="chip">🟡 ${n(.5)}</span><span class="chip">❌ ${n(0)}</span></div></div></div><h3>Resumen del examen</h3>`+
  Q.map((c,j)=>`<div class="it ${ic[c.p][0]}"><p><b>${j+1}. ${E(c.q)}</b></p><p>${ic[c.p][1]} · ${pt(c.p)} pto.</p><p><b>Tu respuesta:</b> ${E(c.u)}</p><p><b>Respuesta correcta:</b> ${E(c.a)}</p></div>`).join('')+
- `<h3>¿Quieres reintentar?</h3><button class="btn" onclick="modes()">🔁 Reintentar este apartado</button><button class="btn ghost" onclick="home()">🏠 Ir al inicio</button>`;
+ `<h3>¿Quieres reintentar?</h3><button class="btn" onclick="modes()">🔁 Reintentar este apartado</button><button class="btn ghost" onclick="home()">🏠 Ir al inicio</button><button class="btn ghost" onclick="shareRes()">📤 Compartir resultado</button>`;
  $('#win').scrollTop=0;
 }
 /* Inicio */
@@ -263,6 +267,51 @@ function cards(){
  $('#st').innerHTML=`<div><b>${tot}</b>preguntas en el banco</div><div><b>3</b>apartados activos</div><div><b>75%</b>para aprobar</div>`;
  $('#grid').innerHTML=SECS.slice(0,4).map(([k,ic])=>{const x=k=='X';return `<button class="card c-${k}" ${x?'disabled':`onclick="openWin('${k}')"`}><span class="ci">${ic}</span><b>${T[k]}</b><small>${x?'🚧 En construcción':'Practicar →'}</small></button>`}).join('');
  $('#big').innerHTML=`<button class="card big" onclick="openWin('M')"><span class="ci">🎯</span><span><b>Apartado Mixto</b><br><small>Preguntas al azar de todos los apartados</small></span></button>`;
+}
+/* Compartir resultado como imagen */
+function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
+function mkImg(){
+ const W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+ const pc=Math.round(sc/Q.length*100),ok=pc>=75,n=p=>Q.filter(q=>q.p==p).length;
+ const F=(w,s)=>`${w} ${s}px Poppins,system-ui,-apple-system,"Segoe UI",sans-serif`;
+ const gr=g.createLinearGradient(0,0,W,H);gr.addColorStop(0,'#00421f');gr.addColorStop(.6,'#00632f');gr.addColorStop(1,'#008a45');
+ g.fillStyle=gr;g.fillRect(0,0,W,H);
+ [[W,0,480],[0,H,420]].forEach(([x,y,r])=>{const rg=g.createRadialGradient(x,y,0,x,y,r);rg.addColorStop(0,'rgba(255,255,255,.2)');rg.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=rg;g.fillRect(0,0,W,H)});
+ g.textAlign='center';g.textBaseline='middle';
+ g.fillStyle='#fff';g.font=F(700,56);g.fillText('Incendios Forestales CMPC',W/2,120);
+ rr(g,W/2-190,175,380,56,28);g.fillStyle='rgba(255,255,255,.2)';g.fill();
+ g.fillStyle='#fff';g.font=F(600,28);g.fillText('Temporada 2026-2027',W/2,204);
+ g.save();g.shadowColor='rgba(0,0,0,.35)';g.shadowBlur=50;g.shadowOffsetY=18;rr(g,70,290,940,940,44);g.fillStyle='#fff';g.fill();g.restore();
+ g.fillStyle='#5f6d66';g.font=F(600,24);try{g.letterSpacing='4px'}catch(e){}g.fillText('RESULTADO DEL EXAMEN',W/2,360);try{g.letterSpacing='0px'}catch(e){}
+ g.fillStyle='#00632f';g.font=F(700,46);g.fillText(T[sec],W/2,425);
+ g.fillStyle='#5f6d66';g.font=F(500,32);g.fillText('Examen '+lv,W/2,478);
+ const cx=W/2,cy=715,R=140,col=ok?'#00793f':'#b73a2e';
+ g.lineWidth=38;g.lineCap='round';g.strokeStyle='#e3e9e6';g.beginPath();g.arc(cx,cy,R,0,Math.PI*2);g.stroke();
+ if(pc>0){g.strokeStyle=col;g.beginPath();g.arc(cx,cy,R,-Math.PI/2,-Math.PI/2+Math.PI*2*pc/100);g.stroke()}
+ g.fillStyle='#18231e';g.font=F(700,92);g.fillText(pc+'%',cx,cy-6);
+ g.fillStyle='#5f6d66';g.font=F(500,26);g.fillText('de puntaje',cx,cy+62);
+ const bt=ok?'APROBADO':'NO APROBADO';g.font=F(700,40);const bw=g.measureText(bt).width+90;
+ rr(g,cx-bw/2,918,bw,78,39);g.fillStyle=col;g.fill();g.fillStyle='#fff';g.fillText(bt,cx,958);
+ g.fillStyle='#18231e';g.font=F(600,36);g.fillText(`${pt(sc)} de ${Q.length} puntos`,cx,1050);
+ g.fillStyle='#5f6d66';g.font=F(500,24);g.fillText('Mínimo para aprobar: 75%',cx,1092);
+ [[n(1),'Correctas','#00793f'],[n(.5),'Incompletas','#d9a441'],[n(0),'Incorrectas','#b73a2e']].forEach(([v,l,k],j)=>{const x=250+j*290;g.fillStyle=k;g.font=F(700,44);g.fillText(v,x,1136);g.fillStyle='#5f6d66';g.font=F(500,22);g.fillText(l,x,1176)});
+ g.fillStyle='rgba(255,255,255,.9)';g.font=F(500,26);g.fillText(new Date().toLocaleDateString('es-CL',{day:'numeric',month:'long',year:'numeric'}),W/2,1295);
+ return c;
+}
+let ib=null,iu='';
+async function shareRes(){
+ try{await document.fonts.load('700 40px Poppins')}catch(e){}
+ mkImg().toBlob(b=>{ib=b;iu=URL.createObjectURL(b);
+  const m=document.createElement('div');m.className='sm';m.id='sm';m.onclick=e=>{if(e.target===m)clsm()};
+  m.innerHTML=`<div><h3 style="margin:0 0 10px">Tu resultado</h3><img src="${iu}" alt="Resultado del examen"><p id="sn" class="m" style="margin:8px 0 0;font-size:.85rem"></p><div class="sa"><button class="btn" onclick="sendImg()">📤 Compartir</button><button class="btn ghost" onclick="dl()">⬇️ Descargar</button><button class="btn ghost" onclick="clsm()">Cerrar</button></div></div>`;
+  document.body.appendChild(m)},'image/png');
+}
+function clsm(){const m=$('#sm');if(m)m.remove();if(iu)URL.revokeObjectURL(iu)}
+function dl(){const a=document.createElement('a');a.href=iu;a.download='resultado-cmpc.png';document.body.appendChild(a);a.click();a.remove()}
+async function sendImg(){
+ const f=new File([ib],'resultado-cmpc.png',{type:'image/png'});
+ if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'Mi resultado · Incendios Forestales CMPC'})}catch(e){}}
+ else{dl();$('#sn').textContent='Tu navegador no permite compartir directamente, así que se descargó la imagen.'}
 }
 /* Tema día/noche */
 function setT(t){document.documentElement.dataset.theme=t;$('#ti').textContent=t=='dark'?'☀️':'🌙';$('#tt').textContent=t=='dark'?' Modo día':' Modo noche';try{localStorage.setItem('th',t)}catch(e){}}
