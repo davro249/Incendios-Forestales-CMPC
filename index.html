@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Incendios Forestales CMPC</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<style>
+:root{--top:calc(60px + env(safe-area-inset-top,0px));--sw:300px;--bg:#f3f5f4;--card:#fff;--tx:#18231e;--mut:#5f6d66;--ac:#00793f;--ac2:#6b7a72;--bd:#d9e0dc;--soft:#e8f1ec;--ok:#00793f;--mid:#a8741a;--bad:#b73a2e;--sh:0 4px 18px rgba(0,40,20,.08)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1512;--card:#18211d;--tx:#e8f0ec;--mut:#9aa8a0;--ac:#34b36c;--ac2:#9aa8a0;--bd:#2a3731;--soft:#1f2c26;--ok:#34b36c;--mid:#d9a441;--bad:#e8675a;--sh:0 6px 24px rgba(0,0,0,.45)}}
+:root[data-theme="dark"]{--bg:#0f1512;--card:#18211d;--tx:#e8f0ec;--mut:#9aa8a0;--ac:#34b36c;--ac2:#9aa8a0;--bd:#2a3731;--soft:#1f2c26;--ok:#34b36c;--mid:#d9a441;--bad:#e8675a;--sh:0 6px 24px rgba(0,0,0,.45)}
+html{scroll-padding-top:var(--top)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Poppins,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.55}
+button{font-family:inherit}
+.tb{position:fixed;top:0;left:0;right:0;height:var(--top);padding:env(safe-area-inset-top,0px) 14px 0;display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,#00421f,#00632f);color:#fff;z-index:50;box-shadow:0 2px 14px rgba(0,0,0,.28)}
+.ib{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.14);color:#fff;border-radius:10px;padding:8px 12px;font-size:.95rem;cursor:pointer}
+.ib:hover{background:rgba(255,255,255,.26)}
+.br{flex:1;display:flex;gap:8px;align-items:center;font-size:1.05rem;min-width:0}
+.br b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:600px){.tl{display:none}}
+#bk{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:35}
+#sb{position:fixed;top:var(--top);bottom:0;left:0;width:var(--sw);max-width:86vw;transform:translateX(-102%);transition:transform .25s;background:var(--card);border-right:1px solid var(--bd);z-index:40;overflow:auto;padding:16px 12px calc(16px + env(safe-area-inset-bottom,0px));box-shadow:var(--sh)}
+body.so #sb{transform:none}
+.sbh{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);padding:0 10px 8px;font-weight:600}
+.ni{display:flex;align-items:center;gap:10px;width:100%;padding:11px 12px;margin:2px 0;border:0;border-radius:12px;background:transparent;color:var(--tx);font-size:.95rem;font-weight:500;text-align:left;cursor:pointer}
+.ni:hover:not(:disabled){background:var(--soft)}
+.ni.on{background:var(--soft);color:var(--ac);font-weight:600}
+.ni:disabled{opacity:.55;cursor:not-allowed}
+.ni .ic{font-size:1.25rem;width:26px;text-align:center}
+.ni span:nth-child(2){flex:1}
+.ni em{font-style:normal;font-size:.68rem;color:var(--ac2);font-weight:600}
+.chev{font-style:normal;font-size:1.3rem;transition:transform .2s;color:var(--mut)}
+.grp.open .chev{transform:rotate(90deg)}
+.lv{margin:2px 0 8px 22px;padding-left:12px;border-left:2px solid var(--bd)}
+.lb{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;padding:9px 12px;margin:3px 0;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font-size:.85rem;cursor:pointer}
+.lb:hover:not(:disabled){border-color:var(--ac);background:var(--soft)}
+.lb small{color:var(--mut)}
+.lb:disabled{opacity:.6;border-style:dashed;cursor:not-allowed}
+.lb:disabled small{color:var(--ac2);font-weight:600}
+.sbf{margin:18px 10px 0;padding-top:12px;border-top:1px solid var(--bd);font-size:.78rem;color:var(--mut)}
+#mn{padding:calc(var(--top) + 22px) 18px 48px;transition:padding .25s}
+.ct{max-width:1000px;margin:0 auto}
+@media(min-width:900px){body.so #mn{padding-left:calc(var(--sw) + 22px)}body.so #win{left:var(--sw)}}
+@media(max-width:899px){body.so #bk{display:block}}
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#00421f,#00632f 60%,#008a45);color:#fff;border-radius:26px;padding:clamp(26px,5vw,54px);box-shadow:var(--sh)}
+.hero::after{content:"";position:absolute;right:-60px;top:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%)}
+.hero h1{margin:0;font-size:clamp(1.9rem,6vw,3.2rem);line-height:1.12;font-weight:700;position:relative}
+.pill{display:inline-block;margin:12px 0;padding:5px 16px;border-radius:999px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);font-weight:600;font-size:clamp(.95rem,2.8vw,1.15rem)}
+.hero p{max-width:620px;margin:0 0 18px;opacity:.95;position:relative}
+.st{display:flex;flex-wrap:wrap;gap:10px;position:relative}
+.st div{background:rgba(255,255,255,.16);border-radius:14px;padding:8px 16px;font-size:.8rem}
+.st b{display:block;font-size:1.3rem}
+.sec{margin:30px 0 14px;font-size:1.3rem;font-weight:700}
+.grid{display:grid;gap:18px;grid-template-columns:1fr}
+@media(min-width:620px){.grid{grid-template-columns:1fr 1fr}}
+.card{--a:var(--ac);display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:24px;border:1px solid var(--bd);border-top:6px solid var(--a);border-radius:20px;background:var(--card);color:var(--tx);text-align:left;cursor:pointer;box-shadow:var(--sh);transition:transform .15s,box-shadow .15s}
+.card:hover:not(:disabled){transform:translateY(-4px)}
+.card .ci{display:grid;place-items:center;width:56px;height:56px;border-radius:16px;background:var(--soft);font-size:1.8rem}
+.card b{font-size:1.2rem;margin-top:6px}
+.card small{color:var(--mut);font-size:.88rem}
+.c-X{--a:#9aa59f}
+.card:disabled{opacity:.65;cursor:not-allowed;border-style:dashed}
+.card:disabled small{color:var(--ac2);font-weight:600}
+.big{margin-top:18px;width:100%;flex-direction:row;align-items:center;gap:18px;padding:28px;border:0;background:linear-gradient(135deg,#00421f,#00632f);color:#fff}
+.big .ci{background:rgba(255,255,255,.22);width:68px;height:68px;font-size:2.2rem;flex:none}
+.big small{color:#fff;opacity:.92}
+#win{position:fixed;top:var(--top);left:0;right:0;bottom:0;z-index:30;background:var(--bg);overflow:auto;padding:24px 18px calc(32px + env(safe-area-inset-bottom,0px));transition:left .25s}
+#wb{max-width:860px;margin:0 auto}
+.wh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+.wh h2{margin:2px 0 0;font-size:clamp(1.5rem,4.5vw,2.1rem);color:var(--ac)}
+.eb{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:700}
+.m{color:var(--mut)}
+.x{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:12px;padding:9px 14px;cursor:pointer;white-space:nowrap}
+.x:hover{border-color:var(--bad);color:var(--bad)}
+.modes{display:grid;gap:14px;margin-top:20px}
+.mode{display:flex;align-items:center;gap:16px;padding:22px;border:1px solid var(--bd);border-left:6px solid var(--ac);border-radius:18px;background:var(--card);color:var(--tx);text-align:left;cursor:pointer;box-shadow:var(--sh)}
+.mode:hover:not(:disabled){border-color:var(--ac);transform:translateX(4px)}
+.mode:disabled{opacity:.6;border-style:dashed;cursor:not-allowed}
+.mi{font-size:2rem}
+.mt{flex:1}.mt b{display:block;font-size:1.2rem}.mt small{color:var(--mut)}
+.mc{font-weight:600;color:var(--ac);white-space:nowrap;text-align:right}
+.mode:disabled .mc{color:var(--ac2)}
+.pl{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:1rem}
+.chip{background:var(--soft);color:var(--ac);padding:4px 14px;border-radius:999px;font-weight:600;font-size:.9rem}
+.bar{height:12px;background:var(--bd);border-radius:8px;overflow:hidden;margin:10px 0 20px}
+.bar i{display:block;height:100%;border-radius:8px;background:var(--ac);transition:width .4s}
+.qc{background:var(--card);border:1px solid var(--bd);border-radius:22px;padding:clamp(20px,4vw,38px);box-shadow:var(--sh)}
+.tag{display:inline-block;background:var(--soft);color:var(--ac);border-radius:999px;padding:3px 12px;font-size:.78rem;font-weight:600}
+.qt{font-size:clamp(1.25rem,3.4vw,1.75rem);line-height:1.35;font-weight:600;margin:12px 0 20px}
+label{display:block;font-size:.85rem;margin-bottom:6px}
+textarea{width:100%;min-height:150px;padding:14px 16px;border:2px solid var(--bd);border-radius:14px;background:var(--bg);color:var(--tx);font:inherit;font-size:1.05rem;resize:vertical}
+textarea:focus{outline:none;border-color:var(--ac)}
+.btn{margin:16px 10px 0 0;padding:14px 28px;border:0;border-radius:14px;background:var(--ac);color:#fff;font-size:1rem;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.btn:hover:not(:disabled){filter:brightness(1.1)}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn.ghost{background:transparent;color:var(--tx);border:1px solid var(--bd);box-shadow:none}
+.conf{margin-top:18px;padding:18px;border-radius:14px;background:var(--soft);border:1px solid var(--bd)}
+.conf p{margin:4px 0}
+.fb{margin-top:6px;padding:18px;border-radius:16px;border:2px solid var(--bd);background:var(--bg)}
+.fb.ok{border-color:var(--ok)}.fb.mid{border-color:var(--mid)}.fb.bad{border-color:var(--bad)}
+.fb h4{margin:0 0 8px;font-size:1.3rem}
+.fb.ok h4{color:var(--ok)}.fb.mid h4{color:var(--mid)}.fb.bad h4{color:var(--bad)}
+.fb p{margin:6px 0;overflow-wrap:anywhere}
+.res{display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:26px;border-radius:22px;background:var(--card);border:2px solid var(--bd);margin:16px 0;box-shadow:var(--sh)}
+.res.ok{border-color:var(--ok)}.res.bad{border-color:var(--bad)}
+.ring{--p:0;--c:var(--bad);display:grid;place-items:center;width:130px;height:130px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--p)*1%),var(--bd) 0);flex:none}
+.res.ok .ring{--c:var(--ok)}
+.ring span{display:grid;place-items:center;width:100px;height:100px;border-radius:50%;background:var(--card);font-size:1.6rem;font-weight:700}
+.res h3{margin:0 0 4px;font-size:1.6rem}
+.cnt{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.it{padding:16px 18px;margin:12px 0;border-left:6px solid var(--bd);background:var(--card);border-radius:14px;box-shadow:var(--sh)}
+.it.ok{border-color:var(--ok)}.it.mid{border-color:var(--mid)}.it.bad{border-color:var(--bad)}
+.it p{margin:5px 0;font-size:.95rem;overflow-wrap:anywhere}
+.ci{color:var(--ac)}.big .ci{color:#fff}.ci svg{width:34px;height:34px}.ic svg{width:22px;height:22px}.ic{color:var(--ac)}
+</style></head><body>
+<header class="tb"><button class="ib" onclick="sbt()" aria-label="Panel lateral">☰</button><div class="br"><span>🔥</span><b>Incendios Forestales CMPC</b></div><button class="ib" onclick="tgl()"><span id="ti">🌙</span><span class="tl" id="tt"> Modo noche</span></button></header>
+<div id="bk" onclick="sbt(0)"></div>
+<aside id="sb"><div class="sbh">Navegación</div><nav id="nav"></nav><div class="sbf">Para aprobar necesitas el 75% del puntaje.</div></aside>
+<main id="mn"><div class="ct">
+<section class="hero"><h1>Incendios Forestales CMPC</h1><div class="pill">Temporada 2026-2027</div>
+<p>Esta es una página para practicar y reforzar conceptos relacionados con los incendios forestales y la Central de CMPC: despacho, recursos, comportamiento del incendio y más. Elige un apartado y pon a prueba tus conocimientos.</p>
+<div class="st" id="st"></div></section>
+<h2 class="sec">Apartados de práctica</h2>
+<section class="grid" id="grid"></section>
+<div id="big"></div>
+</div></main>
+<div id="win" hidden><div id="wb"></div></div>
+<script>
+const $=s=>document.querySelector(s);
+const E=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const T={D:'Apartado de Despacho',R:'Apartado de Recursos',I:'Apartado de Incendios',X:'Apartado de Detección',M:'Apartado Mixto'};
+const ICD='<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M30 4v8"/><rect x="14" y="12" width="22" height="32" rx="4"/><rect x="18" y="16" width="14" height="8" rx="1.5"/><path d="M19 30h12M19 34h12M19 38h12M11 18v7"/></svg>';
+const ICR='<svg viewBox="0 0 48 48"><rect x="3" y="12" width="26" height="22" rx="2.5" fill="#f5b800" stroke="#a87a00" stroke-width="2"/><path d="M29 18h9l7 8v8H29z" fill="#f5b800" stroke="#a87a00" stroke-width="2" stroke-linejoin="round"/><path d="M33 21h4l4 5h-8z" fill="#fff"/><circle cx="13" cy="36" r="5" fill="#2b2b2b"/><circle cx="37" cy="36" r="5" fill="#2b2b2b"/></svg>';
+const SECS=[['D',ICD],['R',ICR],['I','🔥'],['X','📡'],['M','🎯']];
+const LV=[['⚡','Express',5,'Rápido, ideal para repasar'],['📝','Medio',10,'Práctica equilibrada'],['📚','Extenso',20,'Preparación completa']];
+const B={D:[],R:[],I:[]};
+const add=(k,l)=>l.forEach(s=>{const i=s.indexOf('|');B[k].push([s.slice(0,i),s.slice(i+1)])});
+const gen=(k,f,m)=>Object.entries(m).forEach(([a,b])=>B[k].push([f.replace('#',a),b]));
+add('D',[
+"¿Cuál es el tiempo máximo para extender una solicitud de resguardo?|10 minutos.",
+"¿Cuáles son las pistas aéreas principales de CMPC?|Trilahue, María Dolores, Angol.",
+"¿Desde dónde aborda el estado alerta amarilla ZA2 subzona Valle?|Desde Cabrero a Los Ángeles.",
+"¿Qué significa clave 1?|Todos los recursos disponibles en la base deben dirigirse al incidente.",
+"¿Qué significa clave 2?|Adopte todas las medidas necesarias para mantener su seguridad. Existe un conflicto en la zona de operación aérea.",
+"¿Qué significa clave 3?|La zona presenta riesgos elevados por la presencia de tendido eléctrico, cables de madereo, entre otros obstáculos. Adopte las medidas de precaución necesarias para proteger su integridad física en todo momento.",
+"Combate fuera del predio, ¿cuál sería la actividad?|Actividad 23.",
+"Combate dentro de predio, ¿cuál sería la actividad?|Actividad 21.",
+"(Bonus) Indica DAC respondió el correo y se rebaja la restricción de condición privada a sin condición. ¿Qué significa? Hay recursos reunidos. ¿Qué les digo?|Significa que los recursos pueden desplazarse hacia el foco/incendio sin la necesidad de la presencia del resguardo, por lo que se le indica que realicen el desplazamiento en ese momento.",
+"¿Cuáles son las pistas aéreas de CMPC del área Norte?|Panguilemo.",
+"¿Cuáles son las pistas aéreas de CMPC del área Centro?|Trilahue y María Dolores.",
+"¿Cuáles son las pistas aéreas de CMPC del área Sur?|Angol y Mininco.",
+"¿Qué significa incendio controlado?|La propagación del incendio ha sido detenida y se mantiene dentro de los límites establecidos.",
+"¿Qué significa incendio contenido?|El incendio está completamente rodeado por líneas de control y no se espera que escape del perímetro.",
+"¿Qué significa incendio extinto?|No existe fuego activo ni riesgo significativo de reactivación.",
+"¿Qué significa DV y VV?|Dirección del viento y velocidad del viento respectivamente.",
+"¿Qué significa R41 act 11 R29 act 46 Cruce Los Pinos?|Se cancela la instrucción del chequeo de foco, desplazar hacia Cruce Los Pinos manteniéndose en Stand by.",
+"¿Qué significa R29 al R28?|Desplazándose a campamento o base de operación.",
+"¿Cuántas son las zonas de alerta?|6 zonas de alerta.",
+"¿Cuántas son las subzonas de alerta?|17 subzonas.",
+"¿En qué zona y subzona de alerta se encuentra la localidad de Angol?|Zona 3, subzona Valle.",
+"¿Cómo se indica radialmente al recurso terrestre para un chequeo de foco?|R29 Actividad 11.",
+"¿Cómo se indica radialmente al recurso aéreo para un despacho?|R14 para R37.",
+"¿Qué información le entrego al recurso aéreo en el primer despacho?|Rumbo, distancia, coordenadas, fundo, frecuencia aérea, quién está de coordinador aéreo para tomar R12, canal de combate (opcional: clave 2 o clave 3 en el sector)."]);
+gen('D','¿Qué significa la actividad #?',{11:'Chequeo de foco',21:'Combate Incendio Mininco',22:'Combate Incendio Convenio',23:'Combate Incendio Particular',24:'Combate Incendio Social'});
+gen('D','¿Qué significa el código R#?',{2:'Se recibe fuerte y claro',4:'Comprendido',5:'Repita el mensaje',6:'Mantenga en espera',7:'Término de la operación',8:'Inicio de la operación',9:'¿Cómo se recibe este equipo?',10:'Nombre/Clave de la persona',17:'Cadena radial',18:'Instrucción',19:'Sin novedad',20:'Incendio forestal',21:'Foco o humo sin confirmar',22:'Informe de situación',24:'Relacionado a efectuar un trabajo',25:'Incendio controlado',26:'Incendio en liquidación o liquidado',27:'Incendio extinto'});
+add('R',[
+"Menciona todas las brigadas terrestres del programa CMPC.|BM213, BM214, BM413, BM613, BM517, BM614, BM714, BM713.",
+"Menciona todas las brigadas cisternas del programa CMPC.|CM211, CM215, CM411, CM4111, CM3111, CM311, CM6111, CM511, CM611, CM711.",
+"Menciona todas las brigadas mecanizadas del programa CMPC.|SM219, SM419, SM319, SM6110, SM519, SM619.",
+"Menciona todas las brigadas helitransportadas del programa CMPC.|BHM212, BHM412, BHM417, BHM314, BHM318, BHM617, BHM512, BHM612.",
+"¿Cuál es la clave y tipo de recurso ubicado en Angol?|DM3 avión de coordinación y aviones cisterna AM8, AM9 y AM10.",
+"¿Cuál es la clave del avión de coordinación de Angol?|DM3.",
+"¿Cuál es la clave del avión AT ubicado en María Dolores?|AM5, AM6 y AM7.",
+"¿Qué cargo tiene Erik Gajardo, cuál es su clave y qué área debe abordar?|Subgerente de Operaciones, clave S1, todo el patrimonio.",
+"¿Cuál es la fuerza de combate del CM6111 y desde dónde opera?|Fuerza de combate 6 y opera desde Villa Los Vientos.",
+"¿Qué recursos se mueven clave 1 en Angol?|DM3, AM8, AM9 y AM10.",
+"¿Qué recursos se mueven clave 1 en María Dolores?|BHM314, CM3111, AM5, AM6 y AM7.",
+"¿Qué recursos se mueven clave 1 en Trilahue?|BHM412, CM411, SM419, DM1, AM2, AM3 y AM4.",
+"¿Qué cargo tiene Jorge Bascuñán, cuál es su clave y qué área debe abordar?|Supervisor CMPC, S5.1, Territorio Centro (opcional: Área Nacimiento).",
+"¿Qué cargo tiene Belisario Erices, cuál es su clave y qué área debe abordar?|Supervisor CMPC, S6.4, Territorio Sur (opcional: Área Temuco).",
+"¿Qué cargo tiene Pablo Benavides, cuál es su clave y qué área debe abordar?|Jefe Territorial, S5, todo el Territorio Centro.",
+"Nombre y clave del jefe territorial sur.|Segundo Sepúlveda, S6.",
+"Nombre y clave del jefe territorial norte.|Ricardo Pinochet, S4.",
+"Nombre y clave del jefe territorial centro.|Pablo Benavides, S5."]);
+gen('R','¿Dónde está ubicado el HM#?',{1:'Pan de Azúcar',2:'Trilahue',3:'Talcamávida',4:'María Dolores',5:'Tralpenes',6:'Tijeral',7:'San Antonio',8:'Villa Los Vientos'});
+gen('R','¿Cuál es la clave radial de #?',{'Belisario Erices':'S6.4','Víctor Barra':'S5.3','Orlando Henríquez':'S6.3','Jorge Bascuñán':'S5.1','Jorge Carrasco':'S4.1','Ambrosio Condeza':'S6.5','Juan Pardo':'S5.2'});
+add('I',[
+"¿Qué significa que el viento es del norte, a dónde se dirige?|El viento viene desde el Norte, se dirige hacia el Sur.",
+"¿Qué significa que el viento sea puelche, a dónde se dirige?|Es aire proveniente del Este que desciende desde la cordillera, comprimiéndose, característicamente cálido y muy seco. Llega con fuertes ráfagas que pueden superar los 80 a 100 km/h.",
+"¿Cuáles son los puntos de la cabeza del R20 en la grilla del incendio?|Punto 6 y 1.",
+"¿Cuáles son los puntos de la cola del R20 en la grilla del incendio?|Puntos 4 y 3.",
+"¿Cuáles son los puntos del flanco derecho de la grilla del incendio?|Puntos 1, 2 y 3.",
+"¿Cuáles son los puntos del flanco izquierdo de la grilla del incendio?|Puntos 6, 5 y 4.",
+"¿Qué es un incendio forestal?|Es un fuego que se propaga libre y sin control (como árboles, matorrales y pastizales) en terrenos rurales, silvestres o en zonas cercanas a viviendas.",
+"Si el viento es del sur, ¿hacia dónde se dirige?|El viento viene desde el Sur, se dirige hacia el Norte.",
+"Si el viento es del este, ¿hacia dónde se dirige?|El viento viene desde el Este, se dirige hacia el Oeste.",
+"Si el viento es del oeste, ¿hacia dónde se dirige?|El viento viene desde el Oeste, se dirige hacia el Este."]);
+
+/* Análisis de respuestas */
+const SW=new Set("de del la las el los un una y o en a al que se con por para es son lo su sus como este esta desde hacia hay ni".split(' '));
+const nm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+const tk=s=>(nm(s).match(/[a-z0-9]+(?:\.[a-z0-9]+)*/g)||[]).filter(w=>!SW.has(w)).map(w=>/\d/.test(w)?w:w.slice(0,5));
+function ev(u,a){
+ const ut=new Set(tk(u));
+ const segs=a.replace(/\(.*?\)/g,'').split(/[,;]|\.\s|\sy\s/).map(s=>s.trim()).filter(s=>tk(s).length);
+ let tot=0,hit=0;const miss=[];
+ segs.forEach(s=>{const t=tk(s),h=t.filter(w=>ut.has(w)).length;tot+=t.length;hit+=h;if(h/t.length<(t.length<=2?.5:.7))miss.push(s.replace(/[.]$/,''))});
+ const cov=hit/tot;
+ if(!miss.length||(tot>=12&&cov>=.8))return{p:1,miss:''};
+ if(cov>=.3)return{p:.5,miss:miss.join('; ')};
+ return{p:0,miss:''};
+}
+/* Estado y pantallas */
+const pn=k=>k=='M'?B.D.length+B.R.length+B.I.length:(B[k]||[]).length;
+const pool=k=>k=='M'?['D','R','I'].flatMap(s=>B[s].map(x=>[...x,s])):B[k].map(x=>[...x,k]);
+const sh=a=>{a=a.slice();for(let j=a.length-1;j>0;j--){const k=Math.floor(Math.random()*(j+1));[a[j],a[k]]=[a[k],a[j]]}return a};
+const pt=p=>String(p).replace('.',',');
+let sec=null,Q=null,i=0,sc=0,ex=null,lv='';const wb=$('#wb');
+const mob=()=>innerWidth<900;
+function sbt(v){document.body.classList.toggle('so',v===undefined?!document.body.classList.contains('so'):!!v)}
+function side(){
+ const wo=!$('#win').hidden;
+ $('#nav').innerHTML=`<button class="ni ${!wo?'on':''}" onclick="home();if(mob())sbt(0)"><span class="ic">🏠</span><span>Inicio</span></button>`+
+ SECS.map(([k,ic])=>{const x=k=='X';return `<div class="grp ${ex==k?'open':''}"><button class="ni ${wo&&sec==k?'on':''}" ${x?'disabled':''} onclick="tog('${k}')"><span class="ic">${ic}</span><span>${T[k]}</span>${x?'<em>En construcción</em>':'<i class="chev">›</i>'}</button>`+
+ (ex==k&&!x?'<div class="lv">'+LV.map(([a,l,c])=>{const off=c>pn(k);return `<button class="lb" ${off?'disabled':''} onclick="begin('${k}',${c})"><span>${a} ${l}</span><small>${off?'En construcción':c+' preg.'}</small></button>`}).join('')+'</div>':'')+'</div>'}).join('');
+}
+function tog(k){ex=ex==k?null:k;side()}
+function lock(){$('#win').hidden=false;document.body.style.overflow='hidden';$('#win').scrollTop=0}
+function openWin(k){sec=k;ex=k;lock();modes();side()}
+function home(){$('#win').hidden=true;document.body.style.overflow='';sec=null;Q=null;side();scrollTo(0,0)}
+function begin(k,n){sec=k;ex=k;lock();if(mob())sbt(0);start(n)}
+function modes(){
+ const n=pn(sec);Q=null;
+ wb.innerHTML=`<div class="wh"><div><span class="eb">Elige tu examen</span><h2>${T[sec]}</h2></div><button class="x" onclick="home()">✕ Cerrar</button></div><p class="m">Las preguntas se eligen al azar. Para aprobar necesitas al menos el <b>75%</b> del puntaje.</p><div class="modes">`+
+ LV.map(([a,l,c,d])=>{const off=c>n;return `<button class="mode" ${off?'disabled':''} onclick="start(${c})"><span class="mi">${a}</span><span class="mt"><b>Examen ${l}</b><small>${d}</small></span><span class="mc">${off?'🚧 En construcción':c+' preguntas'}</span></button>`}).join('')+'</div>';
+ $('#win').scrollTop=0;side();
+}
+function start(n){lv=LV.find(l=>l[2]==n)[1];Q=sh(pool(sec)).slice(0,n).map(([q,a,k])=>({q,a,k}));i=0;sc=0;show();side()}
+const bar=p=>`<div class="wh"><div><span class="eb">${T[sec]} · Examen ${lv}</span></div><button class="x" onclick="modes()">✕ Salir</button></div><div class="pl"><span>Pregunta <b>${i+1}</b> de ${Q.length}</span><span class="chip">⭐ ${pt(sc)} pts</span></div><div class="bar"><i style="width:${p}%"></i></div>`;
+function show(){
+ const c=Q[i];
+ wb.innerHTML=bar(i/Q.length*100)+`<article class="qc">${sec=='M'?`<span class="tag">${T[c.k]}</span>`:''}<h3 class="qt">${E(c.q)}</h3><label class="m" for="ans">Tu respuesta</label><textarea id="ans" placeholder="Escribe tu respuesta aquí..." oninput="$('#send').disabled=!this.value.trim()"></textarea><div id="act"><button id="send" class="btn" disabled onclick="ask(1)">Enviar respuesta</button></div><div id="conf" class="conf" hidden><b>¿Estás seguro?</b><p class="m">Una vez enviada no podrás cambiar tu respuesta.</p><button class="btn" onclick="submit()">Sí, enviar</button><button class="btn ghost" onclick="ask(0)">Volver</button></div></article>`;
+ $('#win').scrollTop=0;$('#ans').focus();
+}
+function ask(v){$('#act').hidden=!!v;$('#conf').hidden=!v;$('#ans').readOnly=!!v}
+function submit(){
+ const c=Q[i],u=$('#ans').value.trim(),r=ev(u,c.a);
+ c.u=u;c.p=r.p;sc+=r.p;
+ const m={1:['ok','Correcto! ✅'],.5:['mid',`¡Bien! pero faltó: "${E(r.miss)}"`],0:['bad','Incorrecto! ❌']}[r.p],last=i==Q.length-1;
+ wb.innerHTML=bar((i+1)/Q.length*100)+`<article class="qc">${sec=='M'?`<span class="tag">${T[c.k]}</span>`:''}<h3 class="qt">${E(c.q)}</h3><div class="fb ${m[0]}"><h4>${m[1]}</h4><p><b>Tu respuesta:</b> ${E(u)}</p>${r.p<1?`<p><b>Respuesta correcta:</b> ${E(c.a)}</p>`:''}<p class="m">${pt(r.p)} ${r.p==1?'punto':'puntos'}</p></div><button class="btn" onclick="${last?'results()':'i++;show()'}">${last?'Ver resultados':'Siguiente pregunta →'}</button></article>`;
+ $('#win').scrollTop=0;
+}
+function results(){
+ const pc=Math.round(sc/Q.length*100),ok=pc>=75,n=p=>Q.filter(c=>c.p==p).length;
+ const ic={1:['ok','✅ Correcta'],.5:['mid','🟡 Incompleta'],0:['bad','❌ Incorrecta']};
+ wb.innerHTML=`<div class="wh"><div><span class="eb">${T[sec]} · Examen ${lv}</span><h2>Resultados</h2></div></div><div class="res ${ok?'ok':'bad'}"><div class="ring" style="--p:${pc}"><span>${pc}%</span></div><div><h3>${ok?'🎉 ¡Aprobado!':'No aprobado'}</h3><div class="m">${pt(sc)} de ${Q.length} puntos · mínimo 75%</div><div class="cnt"><span class="chip">✅ ${n(1)}</span><span class="chip">🟡 ${n(.5)}</span><span class="chip">❌ ${n(0)}</span></div></div></div><h3>Resumen del examen</h3>`+
+ Q.map((c,j)=>`<div class="it ${ic[c.p][0]}"><p><b>${j+1}. ${E(c.q)}</b></p><p>${ic[c.p][1]} · ${pt(c.p)} pto.</p><p><b>Tu respuesta:</b> ${E(c.u)}</p><p><b>Respuesta correcta:</b> ${E(c.a)}</p></div>`).join('')+
+ `<h3>¿Quieres reintentar?</h3><button class="btn" onclick="modes()">🔁 Reintentar este apartado</button><button class="btn ghost" onclick="home()">🏠 Ir al inicio</button>`;
+ $('#win').scrollTop=0;
+}
+/* Inicio */
+function cards(){
+ const tot=pn('M');
+ $('#st').innerHTML=`<div><b>${tot}</b>preguntas en el banco</div><div><b>3</b>apartados activos</div><div><b>75%</b>para aprobar</div>`;
+ $('#grid').innerHTML=SECS.slice(0,4).map(([k,ic])=>{const x=k=='X';return `<button class="card c-${k}" ${x?'disabled':`onclick="openWin('${k}')"`}><span class="ci">${ic}</span><b>${T[k]}</b><small>${x?'🚧 En construcción':'Practicar →'}</small></button>`}).join('');
+ $('#big').innerHTML=`<button class="card big" onclick="openWin('M')"><span class="ci">🎯</span><span><b>Apartado Mixto</b><br><small>Preguntas al azar de todos los apartados</small></span></button>`;
+}
+/* Tema día/noche */
+function setT(t){document.documentElement.dataset.theme=t;$('#ti').textContent=t=='dark'?'☀️':'🌙';$('#tt').textContent=t=='dark'?' Modo día':' Modo noche';try{localStorage.setItem('th',t)}catch(e){}}
+function tgl(){setT(document.documentElement.dataset.theme=='dark'?'light':'dark')}
+(function(){let t=null;try{t=localStorage.getItem('th')}catch(e){}
+ setT(t||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'));
+ cards();side();if(!mob())sbt(1)})();
+</script></body></html>
